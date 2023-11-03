@@ -24,8 +24,7 @@ const addContacto = async (req: Request, res: Response) => {
       return;
     }
 
-    const newContacto = new ContactoModel({ dni, nomap, email,  codPos, ISO });
-    await newContacto.save();
+    
 
     const ciudad= app.get(await getLocation(codPos,ISO)).city
     const pais= app.get(await getLocation(codPos,ISO)).country
@@ -37,16 +36,19 @@ const addContacto = async (req: Request, res: Response) => {
 
     const hora= app.get(await getTime(continente,pais,ciudad)).date_time
 
+    const newContacto = new ContactoModel({ dni, nomap, email,  codPos, ciudad, pais, hora, tiempo });
+    await newContacto.save();
+
 
     res.status(200).send({
       dni: newContacto.dni,
       nomap: newContacto.nomap,
       email: newContacto.email,
       codPos: newContacto.codPos,
-      ciudad: ciudad,
-      pais: pais,
-      hora:hora,
-      tiempo: tiempo,
+      ciudad: newContacto.ciudad,
+      pais:newContacto.pais,
+      hora: newContacto.hora,
+      tiempo: newContacto.tiempo,
       id: newContacto._id.toString(),
     });
   } catch (error) {
